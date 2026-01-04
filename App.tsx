@@ -1,35 +1,80 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import LoadingScreen from './components/LoadingScreen';
 import Timeline from './components/Timeline';
-import Confession from './components/Confession';
+import MusicControl from './components/MusicControl';
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    const audio = document.getElementById('bg-music') as HTMLAudioElement;
+    audioRef.current = audio;
+
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => setIsPlaying(false);
+
+    if (audio) {
+        audio.addEventListener('play', handlePlay);
+        audio.addEventListener('pause', handlePause);
+        
+        // Check initial state
+        if (!audio.paused) setIsPlaying(true);
+    }
+
+    return () => {
+        if (audio) {
+            audio.removeEventListener('play', handlePlay);
+            audio.removeEventListener('pause', handlePause);
+        }
+    };
+  }, []);
+
+  // Safe wrapper for audio actions to handle interruption errors
+  const handleAudioAction = async (action: 'play' | 'pause') => {
+      const audio = audioRef.current;
+      if (!audio) return;
+
+      try {
+          if (action === 'play') {
+              await audio.play();
+          } else {
+              audio.pause();
+          }
+      } catch (err: any) {
+          // "AbortError" happens when play() is interrupted by pause().
+          // This is expected behavior if the user toggles quickly, so we ignore it.
+          if (err.name !== 'AbortError') {
+              console.warn("Audio playback error:", err);
+          }
+      }
+  };
+
+  const startExperience = () => {
+    setLoading(false);
+    handleAudioAction('play');
+  };
+
+  const togglePlay = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (audio.paused) {
+        handleAudioAction('play');
+    } else {
+        handleAudioAction('pause');
+    }
+  };
 
   return (
-    <div className="min-h-screen font-sans text-slate-200">
+    <div className="h-screen w-screen bg-warm-900 text-gray-100 selection:bg-love-500 selection:text-white overflow-hidden">
+      {!loading && <MusicControl isPlaying={isPlaying} togglePlay={togglePlay} />}
+      
       {loading ? (
-        <LoadingScreen onComplete={() => setLoading(false)} />
+        <LoadingScreen onStart={startExperience} />
       ) : (
-        <main className="animate-[fadeIn_2s_ease-in]">
-           {/* Simple Background Stars/Particles can be CSS based */}
-           <div className="fixed inset-0 z-[-1] opacity-50 pointer-events-none" 
-                style={{backgroundImage: 'radial-gradient(white 1px, transparent 1px)', backgroundSize: '40px 40px'}}>
-           </div>
-
-           <header className="pt-20 pb-10 text-center px-4">
-              <h1 className="text-3xl md:text-5xl font-serif text-slate-100 mb-4 tracking-wider">我们的故事</h1>
-              <div className="w-16 h-1 bg-pink-500 mx-auto rounded-full"></div>
-           </header>
-
-           <Timeline />
-           
-           <Confession />
-
-           <footer className="text-center py-8 text-slate-600 text-xs">
-              <p>Designed with ❤️ for You</p>
-           </footer>
-        </main>
+        <Timeline />
       )}
     </div>
   );
