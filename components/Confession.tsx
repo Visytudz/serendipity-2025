@@ -43,8 +43,29 @@ const Confession: React.FC<Props> = ({ isActive }) => {
         return;
     }
 
-    const x = Math.random() * 200 - 100; // Random x between -100 and 100
-    const y = Math.random() * 200 - 100; // Random y between -100 and 100
+    const isDesktop = window.innerWidth >= 768; // Tailwind md breakpoint
+    let x, y;
+
+    if (isDesktop) {
+        // Desktop: YES button is to the Left.
+        // Prevent moving Left (Negative X) into the YES button.
+        // Move randomly Right (positive X), or Up/Down freely.
+        
+        // X: 40 to 180 (Move right, away from Yes)
+        // Y: -120 to 120 (Move up or down)
+        x = Math.random() * 140 + 40; 
+        y = Math.random() * 240 - 120;
+    } else {
+        // Mobile: YES button is Above.
+        // Prevent moving Up (Negative Y) into the YES button.
+        // Move randomly Down (positive Y), or Left/Right.
+        
+        // X: -80 to 80 (Keep it reachable horizontally)
+        // Y: 40 to 150 (Move down, away from Yes)
+        x = Math.random() * 160 - 80;
+        y = Math.random() * 110 + 40;
+    }
+
     setNoBtnPosition({ x, y });
     setMoveCount(prev => prev + 1);
     
@@ -181,7 +202,8 @@ const Confession: React.FC<Props> = ({ isActive }) => {
                 onMouseEnter={handleNoInteraction}
                 onTouchStart={handleNoInteraction} 
                 onClick={handleNoClick}
-                className={`px-8 py-3 text-gray-300 text-sm rounded-full transition-all z-10 font-serif ${moveCount >= MAX_MOVES ? 'cursor-pointer hover:bg-gray-500' : 'cursor-default'}`}
+                // Updated z-index to 20 to match Yes button, ensuring it isn't rendered 'under' it in Z-space if they barely touch
+                className={`px-8 py-3 text-gray-300 text-sm rounded-full transition-all z-20 font-serif ${moveCount >= MAX_MOVES ? 'cursor-pointer hover:bg-gray-500' : 'cursor-default'}`}
             >
                 {noBtnText}
             </motion.button>
