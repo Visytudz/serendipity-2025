@@ -13,6 +13,7 @@ export interface TimelineNodeData {
   title: string;
   type: InteractionType;
   imageAlt: string;
+  image?: string;
   content: string;
   frontText?: string; // For Polaroid
 }

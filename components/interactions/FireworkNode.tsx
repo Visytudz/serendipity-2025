@@ -38,10 +38,10 @@ const FireworkNode: React.FC<Props> = ({ data }) => {
 
   return (
     <div ref={ref} className="relative w-full overflow-hidden rounded-xl bg-gradient-to-br from-[#1a1025] to-[#2d1b4e] p-1 border border-purple-500/30">
-      <div className="relative z-10 bg-black/40 p-6 rounded-lg backdrop-blur-sm">
+      <div className="relative z-10 bg-black/40 p-6 rounded-lg backdrop-blur-sm text-center">
         <div className="w-full h-48 mb-4 rounded overflow-hidden">
             <img 
-                src={`https://placehold.co/600x400/png?text=${data.imageAlt}`} 
+                src={data.image || `https://placehold.co/600x400/png?text=${data.imageAlt}`} 
                 alt={data.imageAlt}
                 className="w-full h-full object-cover opacity-80"
             />

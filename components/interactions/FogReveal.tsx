@@ -78,7 +78,7 @@ const FogReveal: React.FC<Props> = ({ data }) => {
     const scratch = (x: number, y: number) => {
       ctx.globalCompositeOperation = 'destination-out';
       ctx.beginPath();
-      ctx.arc(x, y, 25, 0, Math.PI * 2);
+      ctx.arc(x, y, 30, 0, Math.PI * 2); // Increased brush size slightly
       ctx.fill();
     };
 
@@ -118,20 +118,20 @@ const FogReveal: React.FC<Props> = ({ data }) => {
   return (
     <div 
       ref={containerRef}
-      className="relative w-full max-w-md mx-auto h-64 rounded-lg overflow-hidden shadow-lg bg-warm-800 border border-warm-700 select-none"
+      className="relative w-full max-w-md mx-auto rounded-lg overflow-hidden shadow-lg bg-warm-800 border border-warm-700 select-none"
     >
-      {/* Content Behind Fog */}
-      <div className="absolute inset-0 p-6 flex flex-col items-center justify-center text-center">
-        <div className="mb-4 text-love-400">
-             <i className="fas fa-cloud-moon text-3xl"></i>
+      {/* Content Behind Fog - Relative positioning with min-height allows it to dictate container size */}
+      <div className="relative z-0 p-10 flex flex-col items-center justify-center text-center min-h-[420px]">
+        <div className="mb-6 text-love-400">
+             <i className="fas fa-cloud-moon text-4xl"></i>
         </div>
-        <p 
-          className="font-serif font-light text-gray-200 leading-loose"
+        <div 
+          className="font-serif font-light text-gray-200 leading-loose text-lg"
           dangerouslySetInnerHTML={{ __html: data.content }}
-        ></p>
+        ></div>
       </div>
 
-      {/* Fog Canvas */}
+      {/* Fog Canvas - Absolute to cover the relative content */}
       <canvas 
         ref={canvasRef}
         className={`absolute inset-0 z-10 touch-none cursor-grab active:cursor-grabbing transition-opacity duration-1000 ${isRevealed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
