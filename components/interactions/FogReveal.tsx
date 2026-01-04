@@ -9,7 +9,6 @@ const FogReveal: React.FC<Props> = ({ data }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isRevealed, setIsRevealed] = useState(false);
-  const [percent, setPercent] = useState(0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -19,26 +18,43 @@ const FogReveal: React.FC<Props> = ({ data }) => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Set canvas size to match container
-    const resize = () => {
-      canvas.width = container.offsetWidth;
-      canvas.height = container.offsetHeight;
+    // Initialize Canvas with correct size and DPR
+    const initCanvas = () => {
+      // If revealed, we don't need to redraw the fog
+      if (isRevealed) return;
+
+      const { offsetWidth, offsetHeight } = container;
+      const dpr = window.devicePixelRatio || 1;
       
-      // Fill with fog color
+      // Set canvas dimensions considering High DPI
+      canvas.width = offsetWidth * dpr;
+      canvas.height = offsetHeight * dpr;
+      
+      // Normalize coordinate system to use CSS pixels
+      ctx.scale(dpr, dpr);
+      
+      // Fill the fog
       ctx.fillStyle = '#9ca3af'; // Gray-400
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillRect(0, 0, offsetWidth, offsetHeight);
       
-      // Add text hint
+      // Draw instruction text
       ctx.fillStyle = '#4b5563';
       ctx.font = '20px serif';
       ctx.textAlign = 'center';
-      ctx.fillText("擦拭迷雾看清真相", canvas.width / 2, canvas.height / 2);
+      ctx.textBaseline = 'middle';
+      ctx.fillText("擦拭迷雾看清真相", offsetWidth / 2, offsetHeight / 2);
     };
 
-    resize();
-    window.addEventListener('resize', resize);
+    // Observe container resize to update canvas
+    const resizeObserver = new ResizeObserver(() => {
+        initCanvas();
+    });
+    resizeObserver.observe(container);
 
-    // Scratch logic
+    // Initial draw
+    initCanvas();
+
+    // Interaction Logic
     let isDrawing = false;
 
     const getPos = (e: MouseEvent | TouchEvent) => {
@@ -62,42 +78,34 @@ const FogReveal: React.FC<Props> = ({ data }) => {
     const scratch = (x: number, y: number) => {
       ctx.globalCompositeOperation = 'destination-out';
       ctx.beginPath();
-      ctx.arc(x, y, 30, 0, Math.PI * 2);
+      ctx.arc(x, y, 25, 0, Math.PI * 2);
       ctx.fill();
-      
-      // Check percentage cleared (simple debounce could be better, but this works for demo)
-      // For performance, we don't check every pixel every frame in production, 
-      // but here we'll just use a simple counter estimation or user interaction duration.
-      // Simplified: Just fade out canvas if user interacts enough.
-      setPercent(p => {
-         const newP = p + 1.5;
-         if (newP > 100 && !isRevealed) {
-            setIsRevealed(true);
-         }
-         return newP;
-      });
     };
 
-    const handleStart = () => { isDrawing = true; };
+    const handleStart = (e: MouseEvent | TouchEvent) => { 
+        isDrawing = true; 
+        const { x, y } = getPos(e);
+        scratch(x, y);
+    };
     const handleEnd = () => { isDrawing = false; };
     const handleMove = (e: MouseEvent | TouchEvent) => {
       if (!isDrawing) return;
-      e.preventDefault(); // Prevent scroll while scratching
       const { x, y } = getPos(e);
       scratch(x, y);
     };
 
+    // Event Listeners with passive: false for touch to prevent scrolling
     canvas.addEventListener('mousedown', handleStart);
-    canvas.addEventListener('touchstart', handleStart);
+    canvas.addEventListener('touchstart', handleStart, { passive: false });
     
     window.addEventListener('mouseup', handleEnd);
     window.addEventListener('touchend', handleEnd);
     
     canvas.addEventListener('mousemove', handleMove);
-    canvas.addEventListener('touchmove', handleMove);
+    canvas.addEventListener('touchmove', handleMove, { passive: false });
 
     return () => {
-      window.removeEventListener('resize', resize);
+      resizeObserver.disconnect();
       canvas.removeEventListener('mousedown', handleStart);
       canvas.removeEventListener('touchstart', handleStart);
       window.removeEventListener('mouseup', handleEnd);
@@ -108,12 +116,12 @@ const FogReveal: React.FC<Props> = ({ data }) => {
   }, [isRevealed]);
 
   return (
-    <div className="relative w-full max-w-md mx-auto h-64 rounded-lg overflow-hidden shadow-lg bg-warm-800 border border-warm-700">
+    <div 
+      ref={containerRef}
+      className="relative w-full max-w-md mx-auto h-64 rounded-lg overflow-hidden shadow-lg bg-warm-800 border border-warm-700 select-none"
+    >
       {/* Content Behind Fog */}
-      <div 
-        ref={containerRef}
-        className="absolute inset-0 p-6 flex flex-col items-center justify-center text-center"
-      >
+      <div className="absolute inset-0 p-6 flex flex-col items-center justify-center text-center">
         <div className="mb-4 text-love-400">
              <i className="fas fa-cloud-moon text-3xl"></i>
         </div>
@@ -127,6 +135,7 @@ const FogReveal: React.FC<Props> = ({ data }) => {
       <canvas 
         ref={canvasRef}
         className={`absolute inset-0 z-10 touch-none cursor-grab active:cursor-grabbing transition-opacity duration-1000 ${isRevealed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+        style={{ width: '100%', height: '100%' }}
       />
     </div>
   );
