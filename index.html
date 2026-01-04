@@ -1,51 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Our Story</title>
+    <title>我们的故事</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Noto Serif SC (300, 400, 700) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;700&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         theme: {
           extend: {
             fontFamily: {
-              serif: ['Merriweather', 'serif'],
+              serif: ['"Noto Serif SC"', 'serif'],
+              sans: ['"Noto Serif SC"', 'serif'],
+            },
+            colors: {
+              love: {
+                50: '#fff1f2',
+                100: '#ffe4e6',
+                400: '#fb7185',
+                500: '#f43f5e',
+                900: '#881337',
+              },
+              warm: {
+                800: '#1c1917',
+                900: '#0c0a09',
+              }
             },
             animation: {
-              'spin-slow': 'spin 3s linear infinite',
-              'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-              'wiggle': 'wiggle 0.5s ease-in-out infinite',
-            },
-            keyframes: {
-              wiggle: {
-                '0%, 100%': { transform: 'rotate(-3deg)' },
-                '50%': { transform: 'rotate(3deg)' },
-              }
+              'spin-slow': 'spin 8s linear infinite',
             }
-          }
-        }
+          },
+        },
       }
     </script>
     <style>
-      /* Custom utility for 3D flip */
-      .perspective-1000 {
-        perspective: 1000px;
-      }
-      .transform-style-3d {
-        transform-style: preserve-3d;
-      }
-      .backface-hidden {
-        backface-visibility: hidden;
-      }
-      .rotate-y-180 {
-        transform: rotateY(180deg);
+      body {
+        background-color: #0c0a09;
+        color: #e7e5e4;
+        font-family: 'Noto Serif SC', serif;
+        font-weight: 300;
+        line-height: 1.8;
+        /* Prevent scrolling on the body, handled by the slider component */
+        overflow: hidden; 
+        margin: 0;
+        height: 100vh;
+        width: 100vw;
       }
       /* Hide scrollbar for cleaner look */
-      body {
-        scrollbar-width: thin;
-        scrollbar-color: #475569 #0f172a;
+      ::-webkit-scrollbar {
+        width: 0px;
+        background: transparent;
       }
     </style>
   <script type="importmap">
@@ -59,9 +70,15 @@
   }
 }
 </script>
+<link rel="stylesheet" href="/index.css">
 </head>
-  <body class="bg-slate-900 text-slate-200 antialiased overflow-x-hidden">
+  <body>
     <div id="root"></div>
-    
-  </body>
+    <!-- Background Music -->
+    <audio id="bg-music" loop preload="auto">
+      <source src="./music.mp3" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+  <script type="module" src="/index.tsx"></script>
+</body>
 </html>

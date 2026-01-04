@@ -1,17 +1,18 @@
-export enum NodeType {
+export enum InteractionType {
   POLAROID = 'POLAROID',
   VINYL = 'VINYL',
   FOG = 'FOG',
   SCROLL = 'SCROLL',
   GIFT = 'GIFT',
-  FIREWORKS = 'FIREWORKS',
+  FIREWORKS = 'FIREWORKS'
 }
 
-export interface TimelineData {
+export interface TimelineNodeData {
   id: number;
   date: string;
   title: string;
-  type: NodeType;
+  type: InteractionType;
+  imageAlt: string;
   content: string;
-  imageAlt?: string; // For placeholder text generation
+  frontText?: string; // For Polaroid
 }
