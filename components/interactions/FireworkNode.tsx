@@ -36,14 +36,21 @@ const FireworkNode: React.FC<Props> = ({ data }) => {
     }
   }, [isInView]);
 
+  const placeholderUrl = `https://placehold.co/600x400/png?text=${data.imageAlt}`;
+
   return (
     <div ref={ref} className="relative w-full overflow-hidden rounded-xl bg-gradient-to-br from-[#1a1025] to-[#2d1b4e] p-1 border border-purple-500/30">
       <div className="relative z-10 bg-black/40 p-6 rounded-lg backdrop-blur-sm text-center">
         <div className="w-full h-48 mb-4 rounded overflow-hidden">
             <img 
-                src={data.image || `https://placehold.co/600x400/png?text=${data.imageAlt}`} 
+                src={data.image || placeholderUrl} 
                 alt={data.imageAlt}
                 className="w-full h-full object-cover opacity-80"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  target.onerror = null;
+                  target.src = placeholderUrl;
+                }}
             />
         </div>
         <h3 className="text-xl font-serif text-purple-200 mb-2">{data.title}</h3>

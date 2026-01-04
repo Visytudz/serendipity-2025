@@ -12,6 +12,8 @@ const Polaroid: React.FC<Props> = ({ data }) => {
   // Split content by <br/> to create separate paragraphs for better spacing/typography
   const contentSegments = data.content.split('<br/>').filter(s => s.trim().length > 0);
 
+  const placeholderUrl = `https://placehold.co/600x400/png?text=${data.imageAlt}`;
+
   return (
     <div className="w-full max-w-sm mx-auto h-[480px] cursor-pointer perspective-1000 group" onClick={() => setIsFlipped(!isFlipped)}>
       <motion.div
@@ -29,9 +31,14 @@ const Polaroid: React.FC<Props> = ({ data }) => {
             {/* Film Grain Overlay */}
             <div className="absolute inset-0 bg-black/5 pointer-events-none z-10 mix-blend-overlay"></div>
             <img 
-              src={data.image || `https://placehold.co/600x400/png?text=${data.imageAlt}`} 
+              src={data.image || placeholderUrl} 
               alt={data.imageAlt}
               className="w-full h-full object-cover filter contrast-[1.1] sepia-[0.2]"
+              onError={(e) => {
+                const target = e.currentTarget;
+                target.onerror = null; // Prevent infinite loop
+                target.src = placeholderUrl;
+              }}
             />
           </div>
           

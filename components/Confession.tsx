@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { CONFESSION_TEXT } from '../constants';
 
@@ -11,6 +11,10 @@ const Confession: React.FC<Props> = ({ isActive }) => {
   const [noBtnPosition, setNoBtnPosition] = useState({ x: 0, y: 0 });
   const [noBtnText, setNoBtnText] = useState("再想一想");
   const [success, setSuccess] = useState(false);
+  const [alternativeEnding, setAlternativeEnding] = useState(false);
+  const [moveCount, setMoveCount] = useState(0);
+
+  const MAX_MOVES = 5; // How many times it runs away before giving up
 
   const handleYesClick = () => {
     setSuccess(true);
@@ -34,15 +38,31 @@ const Confession: React.FC<Props> = ({ isActive }) => {
   };
 
   const handleNoInteraction = () => {
+    // If we reached the max moves, stop moving and allow click
+    if (moveCount >= MAX_MOVES) {
+        return;
+    }
+
     const x = Math.random() * 200 - 100; // Random x between -100 and 100
     const y = Math.random() * 200 - 100; // Random y between -100 and 100
     setNoBtnPosition({ x, y });
+    setMoveCount(prev => prev + 1);
     
-    if (noBtnText === "再想一想") setNoBtnText("再给你一次机会");
-    else if (noBtnText === "再给你一次机会") setNoBtnText("快点答应");
-    else setNoBtnText("别闹了快点");
+    // Update text based on attempts
+    if (moveCount === 0) setNoBtnText("再给你一次机会");
+    else if (moveCount === 1) setNoBtnText("快点答应");
+    else if (moveCount === 2) setNoBtnText("别闹了快点");
+    else if (moveCount === 3) setNoBtnText("真不答应？");
+    else if (moveCount === 4) setNoBtnText("好吧...点这里"); // Stop moving text
   };
 
+  const handleNoClick = () => {
+      if (moveCount >= MAX_MOVES) {
+          setAlternativeEnding(true);
+      }
+  };
+
+  // 1. Success Screen (YES)
   if (success) {
       return (
           <div className="w-full h-full flex flex-col items-center justify-center bg-love-900/20 text-center p-8">
@@ -59,6 +79,64 @@ const Confession: React.FC<Props> = ({ isActive }) => {
       )
   }
 
+  // 2. Alternative Ending Screen (NO -> Accepted)
+  if (alternativeEnding) {
+      return (
+          <div className="w-full h-full flex flex-col items-center justify-center bg-[#050505] text-center p-8 relative overflow-hidden">
+              {/* Starry Background Effect */}
+              <div className="absolute inset-0 z-0">
+                  {[...Array(20)].map((_, i) => (
+                      <motion.div
+                          key={i}
+                          className="absolute bg-white rounded-full opacity-70"
+                          style={{
+                              width: Math.random() * 2 + 1 + 'px',
+                              height: Math.random() * 2 + 1 + 'px',
+                              top: Math.random() * 100 + '%',
+                              left: Math.random() * 100 + '%',
+                          }}
+                          animate={{ opacity: [0.2, 0.8, 0.2] }}
+                          transition={{ duration: Math.random() * 3 + 2, repeat: Infinity }}
+                      />
+                  ))}
+              </div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1 }}
+                className="relative z-10 flex flex-col items-center"
+              >
+                  {/* Moon Icon */}
+                  <div className="w-24 h-24 mb-8 rounded-full bg-gradient-to-tr from-yellow-100 to-yellow-50 shadow-[0_0_30px_rgba(254,243,199,0.3)] flex items-center justify-center">
+                     <div className="w-20 h-20 bg-[#050505] rounded-full translate-x-3 -translate-y-1"></div>
+                  </div>
+
+                  <h1 className="text-3xl md:text-4xl font-serif text-gray-200 mb-6 tracking-widest">
+                      谢谢你的陪伴
+                  </h1>
+                  
+                  <div className="h-px w-24 bg-gray-700 mb-6"></div>
+
+                  <p className="text-gray-400 font-serif leading-loose max-w-md">
+                      如果这只是一段路过的风景，<br/>
+                      那也一定是我最想收藏的画面。<br/>
+                      无论身份如何变化，<br/>
+                      <strong>我都希望你拥有最灿烂的晴天。</strong>
+                  </p>
+
+                  <motion.button 
+                    onClick={() => window.location.reload()}
+                    className="mt-12 text-xs text-gray-600 hover:text-gray-400 transition-colors tracking-widest uppercase border-b border-transparent hover:border-gray-600"
+                  >
+                      Replay Memory
+                  </motion.button>
+              </motion.div>
+          </div>
+      )
+  }
+
+  // 3. Default Confession Screen
   return (
     <div className="w-full h-full flex flex-col items-center justify-center px-6 relative overflow-hidden">
       {/* Spotlight Effect Background */}
@@ -93,12 +171,17 @@ const Confession: React.FC<Props> = ({ isActive }) => {
                 我愿意
             </motion.button>
 
-            {/* NO Button (Runaway) */}
+            {/* NO Button (Runaway -> Clickable) */}
             <motion.button
-                animate={{ x: noBtnPosition.x, y: noBtnPosition.y }}
+                animate={{ 
+                    x: moveCount >= MAX_MOVES ? 0 : noBtnPosition.x, 
+                    y: moveCount >= MAX_MOVES ? 0 : noBtnPosition.y,
+                    backgroundColor: moveCount >= MAX_MOVES ? '#4b5563' : '#374151'
+                }}
                 onMouseEnter={handleNoInteraction}
-                onTouchStart={handleNoInteraction} // Mobile support
-                className="px-8 py-3 bg-gray-700 hover:bg-gray-600 text-gray-300 text-sm rounded-full transition-colors z-10 font-serif"
+                onTouchStart={handleNoInteraction} 
+                onClick={handleNoClick}
+                className={`px-8 py-3 text-gray-300 text-sm rounded-full transition-all z-10 font-serif ${moveCount >= MAX_MOVES ? 'cursor-pointer hover:bg-gray-500' : 'cursor-default'}`}
             >
                 {noBtnText}
             </motion.button>

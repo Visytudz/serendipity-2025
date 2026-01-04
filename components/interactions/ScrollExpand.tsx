@@ -8,6 +8,7 @@ interface Props {
 
 const ScrollExpand: React.FC<Props> = ({ data }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const placeholderUrl = `https://placehold.co/600x400/png?text=${data.imageAlt}`;
 
   return (
     <div className="w-full max-w-md mx-auto">
@@ -44,9 +45,14 @@ const ScrollExpand: React.FC<Props> = ({ data }) => {
                 <div className="absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-black/5 to-transparent"></div>
                 
                 <img 
-                    src={data.image || `https://placehold.co/600x400/png?text=${data.imageAlt}`} 
+                    src={data.image || placeholderUrl} 
                     alt={data.imageAlt}
                     className="w-full h-48 object-cover rounded mb-4 sepia opacity-90"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      target.onerror = null; 
+                      target.src = placeholderUrl;
+                    }}
                 />
 
                 <p 

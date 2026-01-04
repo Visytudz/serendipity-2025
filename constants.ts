@@ -7,7 +7,7 @@ export const TIMELINE_DATA: TimelineNodeData[] = [
     title: "埋下伏笔",
     type: InteractionType.POLAROID,
     imageAlt: "Hallway Encounter",
-    image: "./images/meet.jpg",
+    image: "images/meet.jpg",
     frontText: "2025.12.05",
     content: "“有个小美女跟在你后面诶。”<br/>小冯的一句话，<br/>让走廊里的气氛微妙起来。<br/>我回头拱火：“夸你小美女诶。”<br/>其实比起跟在我身后——<br/><strong>我更想与你并肩同行。</strong>"
   },
