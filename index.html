@@ -1,64 +1,66 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>我们的故事</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts: Noto Serif SC (300, 400, 700) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;700&display=swap" rel="stylesheet">
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              serif: ['"Noto Serif SC"', 'serif'],
-              sans: ['"Noto Serif SC"', 'serif'],
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>我们的故事</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Noto Serif SC (300, 400, 700) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['"Noto Serif SC"', 'serif'],
+            sans: ['"Noto Serif SC"', 'serif'],
+          },
+          colors: {
+            love: {
+              50: '#fff1f2',
+              100: '#ffe4e6',
+              400: '#fb7185',
+              500: '#f43f5e',
+              900: '#881337',
             },
-            colors: {
-              love: {
-                50: '#fff1f2',
-                100: '#ffe4e6',
-                400: '#fb7185',
-                500: '#f43f5e',
-                900: '#881337',
-              },
-              warm: {
-                800: '#1c1917',
-                900: '#0c0a09',
-              }
-            },
-            animation: {
-              'spin-slow': 'spin 8s linear infinite',
+            warm: {
+              800: '#1c1917',
+              900: '#0c0a09',
             }
           },
+          animation: {
+            'spin-slow': 'spin 8s linear infinite',
+          }
         },
-      }
-    </script>
-    <style>
-      body {
-        background-color: #0c0a09;
-        color: #e7e5e4;
-        font-family: 'Noto Serif SC', serif;
-        font-weight: 300;
-        line-height: 1.8;
-        /* Prevent scrolling on the body, handled by the slider component */
-        overflow: hidden; 
-        margin: 0;
-        height: 100vh;
-        width: 100vw;
-      }
-      /* Hide scrollbar for cleaner look */
-      ::-webkit-scrollbar {
-        width: 0px;
-        background: transparent;
-      }
-    </style>
+      },
+    }
+  </script>
+  <style>
+    body {
+      background-color: #0c0a09;
+      color: #e7e5e4;
+      font-family: 'Noto Serif SC', serif;
+      font-weight: 300;
+      line-height: 1.8;
+      /* Prevent scrolling on the body, handled by the slider component */
+      overflow: hidden;
+      margin: 0;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    /* Hide scrollbar for cleaner look */
+    ::-webkit-scrollbar {
+      width: 0px;
+      background: transparent;
+    }
+  </style>
   <script type="importmap">
 {
   "imports": {
@@ -70,15 +72,17 @@
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
+  <link rel="stylesheet" href="/index.css">
 </head>
-  <body>
-    <div id="root"></div>
-    <!-- Background Music -->
-    <audio id="bg-music" loop preload="auto">
-      <source src="./music.mp3" type="audio/mpeg">
-      Your browser does not support the audio element.
-    </audio>
+
+<body>
+  <div id="root"></div>
+  <!-- Background Music -->
+  <audio id="bg-music" loop preload="auto">
+    <source src="/music.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
   <script type="module" src="/index.tsx"></script>
 </body>
+
 </html>
