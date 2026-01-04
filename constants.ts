@@ -33,6 +33,7 @@ export const TIMELINE_DATA: TimelineNodeData[] = [
     title: "怦然心动",
     type: InteractionType.SCROLL,
     imageAlt: "Holding Hands Christmas",
+    image: "/images/handout.jpg",
     content: "圣诞夜的校园，<br/>风很冷，手很凉。<br/>你握住我的手，<br/>笑着说要给我暖一暖。<br/>原来我们都是怕冷的“小体虚”。<br/><strong>那一刻，我的心跳，只为你漏了一拍。</strong>"
   },
   {
@@ -49,6 +50,7 @@ export const TIMELINE_DATA: TimelineNodeData[] = [
     title: "未完待续",
     type: InteractionType.FIREWORKS,
     imageAlt: "New Year Fireworks",
+    image: "/images/end.jpg",
     content: "2025年的最后，你发来冻红的手：<br/>“来给我暖暖？”<br/>我奔向你，去迎接这一年迟到的圆满。<br/>零点过后送你回去，话到嘴边却又咽下。<br/><strong>积攒了一路的勇敢，<br/>最后却只化作了一句笨拙的道别。</strong><br/>如果心跳有声音，<br/>那一刻早就震耳欲聋。<br/>你欠我一张拍立得，<br/>而我想用未来的每一天来讨回。"
   }
 ];
