@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { TimelineData } from '../../types';
+import { motion } from 'framer-motion';
+import { TimelineNodeData } from '../../types';
 
 interface Props {
-  data: TimelineData;
+  data: TimelineNodeData;
 }
 
 const GiftBox: React.FC<Props> = ({ data }) => {
@@ -10,36 +11,48 @@ const GiftBox: React.FC<Props> = ({ data }) => {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="relative w-48 h-48 mb-8">
-        {/* Gift Box Container */}
-        <div 
-            className="w-full h-full flex items-center justify-center cursor-pointer group"
+      <div className="relative w-64 h-64 flex items-center justify-center">
+          
+          {/* The Content Inside (Revealed when open) */}
+          <motion.div
+            className="absolute inset-0 bg-warm-800 rounded-lg p-6 border border-warm-700 flex flex-col items-center justify-center text-center shadow-inner z-0"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: isOpen ? 1 : 0, scale: isOpen ? 1 : 0.8 }}
+            transition={{ delay: 0.2 }}
+          >
+              <i className="fas fa-gamepad text-love-400 text-3xl mb-3"></i>
+              <p 
+                className="font-serif font-light text-sm md:text-base text-gray-200 leading-loose"
+                dangerouslySetInnerHTML={{ __html: data.content }}
+              ></p>
+          </motion.div>
+
+          {/* The Box Lid */}
+          <motion.div
+            className="absolute z-20 w-40 h-20 bg-love-500 rounded-sm top-[25%] cursor-pointer shadow-xl flex items-center justify-center"
+            animate={isOpen ? { y: -120, opacity: 0 } : { y: 0, opacity: 1 }}
+            whileHover={!isOpen ? { rotate: [0, -2, 2, -2, 2, 0] } : {}}
             onClick={() => setIsOpen(true)}
-        >
-            {/* The Actual Box - hidden when open */}
-            <div className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ${isOpen ? 'opacity-0 scale-150 pointer-events-none' : 'opacity-100 hover:animate-wiggle'}`}>
-                <i className="fas fa-gift text-9xl text-pink-500 drop-shadow-lg"></i>
-                <div className="absolute -bottom-4 text-sm text-slate-400">点击拆开礼物</div>
-            </div>
+          >
+              <div className="w-full h-4 bg-love-900 absolute top-8"></div>
+              <div className="w-4 h-full bg-love-900 absolute left-18"></div>
+              <div className="absolute -top-6 text-love-500 filter drop-shadow-lg">
+                  <i className="fas fa-gift text-5xl"></i>
+              </div>
+          </motion.div>
 
-            {/* Exploded Content - shown when open */}
-            <div className={`absolute inset-0 bg-white rounded-lg p-4 shadow-2xl flex flex-col items-center justify-center text-center transition-all duration-700 transform ${isOpen ? 'scale-100 opacity-100 rotate-0' : 'scale-0 opacity-0 rotate-45'}`}>
-                 <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mb-2">
-                    <i className="fas fa-heart text-pink-500 text-2xl animate-pulse"></i>
-                 </div>
-                 <h4 className="font-bold text-slate-800 mb-1">{data.title}</h4>
-                 <div className="text-xs text-slate-500 overflow-y-auto max-h-24">
-                     (巧克力 & 抓大鹅回忆)
-                 </div>
-            </div>
-        </div>
-      </div>
+          {/* The Box Body */}
+          <motion.div
+             className="absolute z-10 w-36 h-32 bg-love-600 rounded-b-lg top-[45%] shadow-2xl"
+             animate={isOpen ? { y: 100, opacity: 0 } : { y: 0, opacity: 1 }}
+          >
+               <div className="w-4 h-full bg-love-900 mx-auto"></div>
+          </motion.div>
 
-      {/* Narrative Text */}
-      <div className={`transition-all duration-1000 delay-300 max-w-md text-center p-4 rounded-xl border border-pink-500/20 bg-pink-900/10 ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <p className="font-serif text-slate-200 leading-relaxed">
-             {data.content}
-          </p>
+          {!isOpen && (
+            <p className="absolute -bottom-8 text-gray-500 text-sm animate-bounce font-light">点击拆开礼物</p>
+          )}
+
       </div>
     </div>
   );
