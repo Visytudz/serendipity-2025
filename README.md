@@ -1,20 +1,60 @@
+# Serendipity 2025 💖
+
+An interactive web application full of surprises and memories. It connects precious moments through a timeline, combined with various interactive effects, creating an immersive romantic experience.
+
+**[Live Preview](https://www.serendipity-2025.xin/)**
+
+## ✨ Features
+
+- **📅 Interactive Timeline**
+  - Record important moments with smooth scrolling and navigation.
+  - Expandable nodes to view detailed content.
+
+- **🎮 Rich Interactive Components**
+  - **🎆 Firework Effects (FireworkNode)**: Click triggers brilliant blooming fireworks.
+  - **🌫️ Fog Reveal (FogReveal)**: Wipe away the fog to discover hidden surprises.
+  - **🎁 Gift Box (GiftBox)**: Interactive unboxing experience.
+  - **📷 Polaroid Wall (Polaroid)**: Retro-style photo display.
+  - **🎵 Vinyl Player (VinylPlayer)**: Immersive music playback experience.
+
+- **💌 Deep Confession (Confession)**
+  - Exclusive text display area to convey feelings.
+
+- **🎥 Smooth Experience**
+  - Built with React + Vite for excellent performance.
+  - Exquisite loading animations (LoadingScreen) and fluid transitions.
+
+## 🛠️ Tech Stack
+
+- [React](https://reactjs.org/) - JavaScript library for building user interfaces
+- [TypeScript](https://www.typescriptlang.org/) - Strictly typed superset of JavaScript
+- [Vite](https://vitejs.dev/) - Next Generation Frontend Tooling
+- [Framer Motion](https://www.framer.com/motion/) (Animation support)
+
+## 🚀 Quick Start
+
+To run this project locally, follow these steps:
+
+### 1. Prerequisites
+
+Ensure your local environment has [Node.js](https://nodejs.org/) installed (v16+ recommended).
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Start Project
+
+```bash
+npm run dev
+```
+
+Once started, visit the local address output in the terminal (usually `http://localhost:5173`) to preview.
+
+---
+
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+Made with ❤️ by Verve
 </div>
-
-# Run and deploy your AI Studio app
-
-This contains everything you need to run your app locally.
-
-View your app in AI Studio: https://ai.studio/apps/drive/1g9I2l3brGHb9ybEbDIlg6NNQ1KOJcamu
-
-## Run Locally
-
-**Prerequisites:**   Node.js
-
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
