@@ -34,7 +34,8 @@ const App: React.FC = () => {
   useEffect(() => {
     // Send notification to DingTalk on page load
     const sendDingTalkNotification = async () => {
-      const webhook = "https://oapi.dingtalk.com/robot/send?access_token=90c0ca9d5aeb7ecf76029a737fe270adb70e6aefa3d1ab32c290f6d0d46d3702";
+      // pointing to our newly created API route (proxied by Vite locally, handled by Vercel in production)
+      const webhook = "/api/notify";
 
       let clientInfo: any = {
         ip: 'Unknown',
@@ -45,7 +46,7 @@ const App: React.FC = () => {
       };
 
       try {
-        // 尝试获取详细 IP 地理位置信息 (使用 ipapi.co)
+        // Fetch IP details from a public API
         const res = await fetch('https://ipapi.co/json/');
         if (res.ok) {
           const data = await res.json();
