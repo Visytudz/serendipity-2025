@@ -1,43 +1,17 @@
-import React, { useState, useRef, useEffect } from 'react';
-import LoadingScreen from './components/LoadingScreen';
-import Timeline from './components/Timeline';
-import MusicControl from './components/MusicControl';
+import React, { useEffect } from 'react';
 
 const App: React.FC = () => {
-  const [loading, setLoading] = useState(true);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
   useEffect(() => {
-    const audio = document.getElementById('bg-music') as HTMLAudioElement;
-    audioRef.current = audio;
-
-    const handlePlay = () => setIsPlaying(true);
-    const handlePause = () => setIsPlaying(false);
-
-    if (audio) {
-      audio.addEventListener('play', handlePlay);
-      audio.addEventListener('pause', handlePause);
-
-      // Check initial state
-      if (!audio.paused) setIsPlaying(true);
-    }
-
-    return () => {
-      if (audio) {
-        audio.removeEventListener('play', handlePlay);
-        audio.removeEventListener('pause', handlePause);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    // Send notification to DingTalk on page load
     const sendDingTalkNotification = async () => {
-      // pointing to our newly created API route (proxied by Vite locally, handled by Vercel in production)
-      const webhook = "/api/notify";
+      const webhook = '/api/notify';
 
-      let clientInfo: any = {
+      let clientInfo: {
+        ip: string;
+        city: string;
+        region: string;
+        country: string;
+        org: string;
+      } = {
         ip: 'Unknown',
         city: 'Unknown',
         region: 'Unknown',
@@ -46,7 +20,6 @@ const App: React.FC = () => {
       };
 
       try {
-        // Fetch IP details from a public API
         const res = await fetch('https://ipapi.co/json/');
         if (res.ok) {
           const data = await res.json();
@@ -58,8 +31,8 @@ const App: React.FC = () => {
             org: data.org || 'Unknown',
           };
         }
-      } catch (e) {
-        console.warn('Failed to fetch IP details', e);
+      } catch (error) {
+        console.warn('Failed to fetch IP details', error);
       }
 
       const message = [
@@ -79,7 +52,7 @@ const App: React.FC = () => {
         `🔗 访问来源`,
         `URL: ${window.location.href}`,
         `Referrer: ${document.referrer || '直接访问'}`,
-        `时间: ${new Date().toLocaleString()}`
+        `时间: ${new Date().toLocaleString()}`,
       ].join('\n');
 
       try {
@@ -89,14 +62,13 @@ const App: React.FC = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            msgtype: "text",
+            msgtype: 'text',
             text: {
-              content: message
-            }
+              content: message,
+            },
           }),
         });
       } catch (error) {
-        // Ignore errors to avoid affecting user experience
         console.warn('Notification skipped:', error);
       }
     };
@@ -104,52 +76,46 @@ const App: React.FC = () => {
     sendDingTalkNotification();
   }, []);
 
-  // Safe wrapper for audio actions to handle interruption errors
-  const handleAudioAction = async (action: 'play' | 'pause') => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    try {
-      if (action === 'play') {
-        await audio.play();
-      } else {
-        audio.pause();
-      }
-    } catch (err: any) {
-      // "AbortError" happens when play() is interrupted by pause().
-      // This is expected behavior if the user toggles quickly, so we ignore it.
-      if (err.name !== 'AbortError') {
-        console.warn("Audio playback error:", err);
-      }
-    }
-  };
-
-  const startExperience = () => {
-    setLoading(false);
-    handleAudioAction('play');
-  };
-
-  const togglePlay = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    if (audio.paused) {
-      handleAudioAction('play');
-    } else {
-      handleAudioAction('pause');
-    }
-  };
-
   return (
-    <div className="h-screen w-screen bg-warm-900 text-gray-100 selection:bg-love-500 selection:text-white overflow-hidden">
-      {!loading && <MusicControl isPlaying={isPlaying} togglePlay={togglePlay} />}
+    <main className="relative min-h-screen w-screen overflow-hidden bg-[#e2d2bb] text-[#1d1c19] selection:bg-[#1d1c19] selection:text-[#f5ead8]">
+      <style>
+        {`
+          @keyframes paper-drift {
+            0% { transform: translate3d(0, 0, 0) scale(1); }
+            50% { transform: translate3d(-1.2%, 0.8%, 0) scale(1.025); }
+            100% { transform: translate3d(0, 0, 0) scale(1); }
+          }
 
-      {loading ? (
-        <LoadingScreen onStart={startExperience} />
-      ) : (
-        <Timeline />
-      )}
-    </div>
+          @keyframes quiet-enter {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+
+          .paper-drift {
+            animation: paper-drift 18s ease-in-out infinite;
+          }
+
+          .quiet-enter {
+            animation: quiet-enter 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+          }
+        `}
+      </style>
+      <div className="paper-drift absolute -inset-8 bg-[radial-gradient(circle_at_20%_18%,rgba(255,248,232,0.58),transparent_30%),radial-gradient(circle_at_78%_74%,rgba(192,128,78,0.16),transparent_34%),linear-gradient(135deg,rgba(255,255,255,0.28),transparent_44%),linear-gradient(rgba(73,48,29,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(73,48,29,0.035)_1px,transparent_1px)] bg-[size:auto,auto,auto,36px_36px,36px_36px]" />
+      <section className="relative mx-auto flex min-h-screen max-w-6xl items-center px-7 py-8 sm:px-12 sm:py-12 lg:px-16">
+        <div className="quiet-enter max-w-5xl">
+          <p className="mb-8 text-xs font-normal uppercase tracking-[0.36em] text-[#6f6a5f]">
+            Serendipity / 2025
+          </p>
+          <h1 className="text-[clamp(3rem,8.5vw,7.25rem)] font-normal leading-[0.95] tracking-[0.03em] text-[#171612]">
+            故事
+            <span className="block pl-[0.48em] text-[#4d4941]">已丢失</span>
+          </h1>
+          <p className="mt-8 max-w-full overflow-hidden text-ellipsis whitespace-nowrap text-[clamp(0.82rem,1.8vw,1.22rem)] font-light italic leading-8 tracking-[0.07em] text-[#5b4c3e]">
+            “Tu deviens responsable pour toujours de ce que tu as apprivoisé.”
+          </p>
+        </div>
+      </section>
+    </main>
   );
 };
 
